@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="verificationhistory">
+    <resultMap type="VerificationHistory" id="VerificationHistoryResultMap">
+        <id property="id" column="id" />
+        <id property="clientId" column="client_ident" />
+        <id property="failInfo" column="fail_info" />
+        <id property="requestTime" column="requestTime" />
+    </resultMap>
+
+    <select id="getVerificationHistoryById" resultMap="VerificationHistoryResultMap">
+    <![CDATA[
+        SELECT * from t_verificationhistory where id = #{id}
+    ]]>
+    </select>
+
+    <select id="listVerificationHistorys" resultMap="VerificationHistoryResultMap">
+    <![CDATA[
+        SELECT * from t_verificationhistory order by requestTime
+    ]]>
+    </select>
+
+    <insert id="createVerificationHistory" parameterType="VerificationHistory">
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        insert into t_verificationhistory
+        (
+        client_ident
+        ,fail_info
+        ,requestTime
+        )
+        values
+        (
+        #{clientId}
+        ,#{failInfo}
+        ,#{requestTime}
+        )
+    </insert>
+</mapper>

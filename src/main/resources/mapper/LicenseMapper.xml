@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="license">
+    <resultMap type="License" id="LicenseResultMap">
+        <id property="id" column="id" />
+        <id property="storage" column="storage" />
+        <id property="keyString" column="keystring" />
+        <id property="clientId" column="client_ident" />
+        <id property="sharedSecret" column="shared_secret" />
+        <id property="licenseType" column="license_type" />
+        <id property="createdDate" column="created_d" />
+        <id property="expiredDate" column="expired_d" />
+        <id property="activatedDate" column="activated_d" />
+        <id property="suspendedDate" column="suspended_d" />
+    </resultMap>
+
+    <select id="getLicenseById" resultMap="LicenseResultMap">
+    <![CDATA[
+        SELECT * from t_license where id = #{id}
+    ]]>
+    </select>
+    
+    <select id="getLicenseByLicensekey" resultMap="LicenseResultMap">
+    <![CDATA[
+        SELECT * from t_license where keystring = #{keyString}
+    ]]>
+    </select>
+    
+    <select id="getAllLicenses" 
+        resultMap="LicenseResultMap">
+    <![CDATA[
+        SELECT * from t_license order by created_d
+    ]]>
+    </select>
+    
+    <update id="updateLicenseById" parameterType="License">
+        update t_license
+        <set> 
+          <if test="keyString != null">keystring=#{keyString},</if>
+          <if test="clientId != null">client_ident=#{clientId},</if>
+          <if test="sharedSecret != null">shared_secret=#{sharedSecret},</if>
+          <if test="licenseType != null">license_type=#{licenseType},</if>
+          <if test="expiredDate != null">expired_d=#{expiredDate},</if>
+          <if test="suspendedDate != null">suspended_d=#{suspendedDate},</if>
+          <if test="createdDate != null">created_d=#{createdDate},</if>
+          <if test="activatedDate != null">activated_d=#{activatedDate},</if>
+        </set>
+       where id=#{id}
+    </update>
+    
+    <update id="updateLicenseByLicensekey" parameterType="License">
+        update t_license
+        <set> 
+          <if test="clientId != null">client_ident=#{clientId},</if>
+          <if test="sharedSecret != null">shared_secret=#{sharedSecret},</if>
+          <if test="licenseType != null">license_type=#{licenseType},</if>
+          <if test="expiredDate != null">expired_d=#{expiredDate},</if>
+          <if test="suspendedDate != null">suspended_d=#{suspendedDate},</if>
+          <if test="createdDate != null">created_d=#{createdDate},</if>
+          <if test="activatedDate != null">activated_d=#{activatedDate},</if>
+        </set>
+       where keystring=#{keyString}
+    </update>
+    
+    <insert id="insertLicense" parameterType="License">
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
+        insert into t_license
+        (
+          storage
+             ,client_ident
+             ,shared_secret
+             ,keystring
+             ,license_type
+             ,expired_d
+             ,suspended_d
+             ,created_d
+             ,activated_d
+           )
+          values
+        (
+             #{storage}
+             ,#{clientId}
+             ,#{sharedSecret}
+             ,#{keyString}
+             ,#{licenseType}
+             ,#{expiredDate}
+             ,#{suspendedDate}
+             ,#{createdDate}
+             ,#{activatedDate}
+        )
+    </insert>
+</mapper>
